@@ -1,9 +1,23 @@
 # Core+ Java Client Example
 
 This repository contains an example Deephaven Core+ Java client application, for use with a Deephaven Enterprise
-installation. The `build.gradle` file includes all the required dependencies. Be sure to update the versions in the
-`gradle.properties` file to match the version of your Deephaven installation — the version numbers specified in
-`gradle.properties` determine which version of Deephaven libraries are retrieved by Gradle.
+installation.
+
+## Gradle configuration
+
+The `build.gradle` file includes all the required dependencies. Be sure to update the versions in
+the `gradle.properties` file in this repository to match the version of your Deephaven installation — the version
+numbers specified in `gradle.properties` determine which version of Deephaven libraries are retrieved by Gradle.
+Additionally, your credentials for Deephaven Artifactory must be available to Gradle. Typically, these are stored in
+a `~/.gradle/gradle.properties` file like the following:
+
+```
+% cat ~/.gradle/gradle.properties
+artifactoryUser=<Deephaven Artifactory username>
+artifactoryAPIKey=<Deephaven Artifactory password or API key>
+```
+
+## Example application
 
 The example class in this repository (`org.example.ClientExample`) connects and authenticates to a Deephaven cluster (
 using either a username and password or a private key file for authentication), then starts a new query worker to run a
@@ -15,7 +29,7 @@ both new workers and existing persistent queries, but does not cover the extensi
 further examples of operations supported with Barrage and the Deephaven APIs, please see the example in the
 [basic-java-client](https://github.com/deephaven-examples/basic-java-client) repository.
 
-## Running the example program
+### Running the example program
 
 The example application can be run using Gradle, which will set the required JVM arguments. To start the example
 using a username and password for authentication, run the following command:
