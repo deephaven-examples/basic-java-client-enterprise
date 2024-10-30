@@ -1,0 +1,50 @@
+import java.util.stream.Collectors
+
+plugins {
+    id 'application'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        credentials {
+            username = artifactoryUser ?: System.getProperty('user.name')
+            password = artifactoryAPIKey ?: ''
+        }
+        url "https://illumon.jfrog.io/illumon/libs-customer"
+    }
+}
+
+dependencies {
+    // DHC dependencies
+    implementation platform("io.deephaven:deephaven-bom:${dhcVersion}")
+    runtimeOnly "io.deephaven:deephaven-log-to-slf4j"
+    runtimeOnly 'ch.qos.logback:logback-classic:1.4.12'
+    // END DHC dependencies
+
+    implementation "iris:client-barrage:$dheVersion"
+}
+
+
+application {
+    mainClassName = 'org.example.ClientExample'
+    applicationDefaultJvmArgs = ["-DConfiguration.rootFile=dh-defaults.prop",
+                                 "-DDeephavenEnterprise.rootFile=iris-common.prop",
+                                 "--add-opens=java.base/java.nio=ALL-UNNAMED"]
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register("printDependenciesList") {
+    // This is like './gradlew dependencies', except it prints a list of dependencies instead of a tree.
+    List<ResolvedArtifact> allDeps = project.configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.stream().sorted(Comparator.comparing({ ResolvedArtifact a -> a.owner.toString()})).collect(Collectors.toList())
+    for (ResolvedArtifact dep : allDeps) {
+        println dep.owner
+    }
+    println "Printed ${allDeps.size()} dependencies."
+}
